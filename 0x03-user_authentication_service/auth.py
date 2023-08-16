@@ -11,10 +11,21 @@ from flask import (
     url_for
 )
 
-from auth import Auth
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 
-app = Flask(__name__)
-AUTH = Auth()
+def create_token(user_id):
+    s = Serializer("mysecretkey", 3600)
+    token = s.dumps({"user_id": user_id}).decode("utf-8")
+    return token
+
+def _hash_password(password: str) -> bytes:
+    # ... your existing _hash_password implementation
+
+    from flask import Flask
+
+    app = Flask(__name__)
+
+    AUTH = Auth()
 
 
 @app.route("/", methods=["GET"], strict_slashes=False)
