@@ -58,11 +58,16 @@ def login():
         abort(401)  # Unauthorized
 
     # Successful login
-    session_id = str(uuid.uuid4())  # Generate a unique session ID
+session_id = str(uuid.uuid4())  # Generate a unique session ID
     response = jsonify({"email": email, "message": "logged in"})
     response.set_cookie('session_id', session_id)
 
-    return response
+	return response
 
 if __name__ == '__main__':
     app.run(debug=True)
+	
+	
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port="5000")
