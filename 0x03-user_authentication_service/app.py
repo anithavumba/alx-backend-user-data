@@ -2,6 +2,7 @@
 """
 Flask app
 """
+import uuid
 from flask import (
     Flask,
     request,
@@ -41,7 +42,27 @@ def users() -> str:
     return jsonify({"email": f"{email}", "message": "user created"})
 
 # Rest of your route handlers go here
+users = {
+    "bob@bob.com": "mySuperPwd"
+}
 
+@app.route('/sessions', methods=['POST'])
+def login():
+    if not request.form or 'email' not in request.form or 'password' not in request.form:
+        abort(400)  # Bad request
 
-if __name__ == "__main__":
-    app.run(host="0.0.0.0", port="5000")
+    email = request.form['email']
+    password = request.form['password']
+
+    if email not in users or users[email] != password:
+        abort(401)  # Unauthorized
+
+    # Successful login
+    session_id = str(uuid.uuid4())  # Generate a unique session ID
+    response = jsonify({"email": email, "message": "logged in"})
+    response.set_cookie('session_id', session_id)
+
+    return response
+
+if __name__ == '__main__':
+    app.run(debug=True)
